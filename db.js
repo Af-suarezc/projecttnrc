@@ -1,10 +1,10 @@
 import mysql from "mysql2";
 
 export const db = mysql.createConnection({
-    host: "db-tasks.ctgwmc646ibw.us-east-2.rds.amazonaws.com",
+    host: "TU HOST DE AMAZON WB SERVICE AQUI.amazonaws.com",
     database:"tasks",
     user: "afsc",
-    password: "1065647333pip3"
+    password: "TU CONTRASEÑA AQUI"
 })
 
 export function connect_SQL() {
