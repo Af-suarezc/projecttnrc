@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from './pages/Login.jsx';
 import Session from './pages/Session.jsx';
 import AddTasks from './pages/AddTasks.jsx';
+import ConsultTasks from './pages/ConsultTasks.jsx';
 import  { useState } from 'react';
 export default function App() {
   const [tasks, setTasks]=useState([
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/login" element= {<Login/>} />
         <Route path="/loggedUser" element= {<Session tasks={tasks}/>} />
         <Route path="/addtasks" element= {<AddTasks setTasks={setTasks} tasks={tasks}/>} />
+        <Route path="/consulttasks" element= {<ConsultTasks/>} />
      </Routes>
     </>
   )

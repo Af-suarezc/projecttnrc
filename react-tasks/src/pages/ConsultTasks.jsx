@@ -5,6 +5,8 @@ import NavBar from '../components/NavBar';
 import '../pageStyles/addtasks.css'
 import { useNavigate } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
+import Stack from '@mui/material/Stack';
+import Cards from "../components/Cards"
 
 import { Route, Routes, Link as RouterLink } from "react-router-dom";
 
@@ -14,9 +16,7 @@ export default function AddTasks({ tasks, setTasks }){
     const [valorSeleccionado, setValorSeleccionado] = useState(null);
     const [taskToAdd, setTaskToAdd]=useState(null);
     const  navigate  = useNavigate ();
-    const ableCategories = [ { tipo: 'Opción 1', value: 1 },
-      { tipo: 'Opción 2', value: 2 },
-      { tipo: 'Opción 3', value: 3 }]
+    const [categoryTask, setCategoryTask]=useState([]);
     const [categoriesOptions, setCategoriesOptions] = useState([]);
     useEffect(() => {
       // Hacer la solicitud GET a la API
@@ -63,32 +63,20 @@ export default function AddTasks({ tasks, setTasks }){
       
     };
   
-    const handleAddTask = async () => {
+    const handleConsultTask = async () => {
       let idCateg;
       if(valorSeleccionado ==null){
         alert('Por favor selecciona una categoria a la tarea');
       }
-      if (title.trim() !== '' && description.trim() !== '') {
-        setTasks([...tasks, { title, description}]);
-        setTitle('');
-        setDescription('');
-        //Aquí hago el consumo con axios al servidor para ingresar la tarea a registrar
-        console.log("valorSeleccionado")
-        console.log(valorSeleccionado)
-        idCateg= valorSeleccionado.id;
-        setTaskToAdd({ titulo:title, descripcion:description, category:idCateg})
-        // console.log(taskToAdd);
-        // if (taskToAdd) {
-        //   const respuesta = await axios.post('/api/createTask/newTask', taskToAdd);
-        //   if (respuesta) setTaskToAdd(null);
-        //   navigate('/loggedUser');  
-        // }else{
-        //   console.log()
-        // }
-        
-      } else {
-        alert('Por favor ingresa un título y una descripción para la tarea.');
-      }
+      console.log(valorSeleccionado)
+      let selectedCategories = await axios.get('/api/getTasks/taskCat/'+valorSeleccionado.id);
+      if (selectedCategories.status == 200 && selectedCategories.data.length != 0) {
+        setCategoryTask(selectedCategories.data);
+        console.log(categoriesOptions);
+      }else{
+        setCategoryTask([]);
+        console.log("NO HAY DATOS CATEGORIA");
+      }  
     };
   
     return (
@@ -98,23 +86,9 @@ export default function AddTasks({ tasks, setTasks }){
         </div>
         <div className="mainContainer">
         <Typography variant="h4" gutterBottom>
-          Añadir Nueva Tarea
+          Consultar Tareas
         </Typography>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '80%' }}>
-          <TextField
-            label="Título"
-            variant="outlined"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <TextField
-            label="Descripción"
-            variant="outlined"
-            multiline
-            rows={4}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px', width: '80%' }}>
           <Autocomplete
             disablePortal
             id="combo-box-demo"
@@ -126,9 +100,22 @@ export default function AddTasks({ tasks, setTasks }){
             onChange={handleOptionsChange}
             isOptionEqualToValue={(option, value) => option.value === value?.value} 
           />
-          <Button variant="contained" color="primary" onClick={handleAddTask}>
-            Añadir Tarea
+          <Button variant="contained" color="primary" onClick={handleConsultTask}>
+            Consultar Tareas
           </Button>
+        </Box>
+        <hr/>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '80%' }}>
+        {
+            categoryTask.length==0 ? <h1>No existen tareas para esa categoria</h1>:
+            <div>
+                <Stack spacing={1} direction="row" sx={{flexWrap: 'wrap' }}>
+                    {categoryTask.map((task) => (
+                    <Cards key={task.id} task={task} />
+                    ))}
+                </Stack>
+            </div>
+        }
         </Box>
         </div>
       </Container>

@@ -10,8 +10,8 @@ import { deepOrange, deepPurple } from '@mui/material/colors';
 
 
 export default function Cards({task}) {
-    const {title, description}=task;
-    const avatarValue = title ? title[0].toUpperCase():"N/A";
+    const {titulo, descripcion}=task;
+    const avatarValue = titulo ? titulo[0].toUpperCase():"N/A";
   return (
     <div className='cardtask'>
       <Card variant="outlined" sx={{ mb: 2, width:"300px", height:"250px" }}>
@@ -24,10 +24,10 @@ export default function Cards({task}) {
       />
         <CardContent>
           <Typography variant="h5" component="div">
-            {title}
+            {titulo}
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {description}
+            {descripcion}
           </Typography>
         </CardContent>
       </Card>
